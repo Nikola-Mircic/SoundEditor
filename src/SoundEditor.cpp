@@ -21,5 +21,7 @@ SoundEditor::~SoundEditor()
 bool SoundEditor::OnInit() {
 	window->Show();
 
+
+
 	return true;
 }
