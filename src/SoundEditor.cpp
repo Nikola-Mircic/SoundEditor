@@ -1,27 +1,16 @@
 #include "SoundEditor.h"
 
-IMPLEMENT_APP(SoundEditor);
+#include "Window.h"
 
-SoundEditor::SoundEditor()
+wxBEGIN_EVENT_TABLE(Window, wxFrame)
+    EVT_MENU(wxID_EXIT, Window::OnExit)
+wxEND_EVENT_TABLE()
+wxIMPLEMENT_APP(SoundEditor);
+
+bool SoundEditor::OnInit()
 {
-	/*
-	wxFULLSCREEN_NOMENUBAR
-	wxFULLSCREEN_NOTOOLBAR
-	wxFULLSCREEN_NOSTATUSBAR
-	*/
-
-	window = new Window();
+    this->window = new Window();
+    this->window->Show(true);
+    return true;
 }
 
-SoundEditor::~SoundEditor()
-{
-
-}
-
-bool SoundEditor::OnInit() {
-	window->Show();
-
-
-
-	return true;
-}

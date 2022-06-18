@@ -1,18 +1,26 @@
 #pragma once
 
-#include "wx/wx.h"
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 
 #include "audio/WAVReader.h"
 
 class Window : public wxFrame
 {
 public:
-	Window();
-	~Window();
+    Window();
 
 private:
-	//DrawPanel
-	WAVReader* reader = nullptr;
+    WAVReader* reader = nullptr;
 	WAV_FILE* sound = nullptr;
+
+    void OnExit(wxCommandEvent &event);
+    wxDECLARE_EVENT_TABLE();
 };
 
+enum
+{
+    ID_Hello = 1
+};

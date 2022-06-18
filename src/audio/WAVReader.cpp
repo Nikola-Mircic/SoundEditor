@@ -1,6 +1,8 @@
 #include "WAVReader.h"
 
-#include "wx/filesys.h"
+#include <iostream>
+
+#include <wx/filesys.h>
 
 WAVReader::WAVReader() {
 	sound = nullptr;
@@ -16,7 +18,7 @@ WAV_FILE* WAVReader::GetLastSound() {
 WAV_FILE* WAVReader::ReadFileData(std::string url, std::string filename) {
 	WAV_FILE* temp = new WAV_FILE();
 
-	FILE* file = fopen(url.append(filename).c_str(), "rb");
+	FILE* file = fopen(url.append(filename).c_str(), "r+");
 
 	if (file != NULL) {
 		// Read the header
@@ -36,6 +38,8 @@ WAV_FILE* WAVReader::ReadFileData(std::string url, std::string filename) {
 		fclose(file);
 
 		sound = temp;
+	}else {
+		std::cout << "Problem opening the file...\n";
 	}
 
 	return temp;

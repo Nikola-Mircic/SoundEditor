@@ -1,24 +1,33 @@
 #include "Window.h"
 
-#define FRAME_PARENT nullptr
-#define FRAME_ID wxID_ANY
-#define FRAME_TITLE "Sound editor v0.0.1"
-#define FRAME_POSITION wxPoint(20, 20)
-#define FRAME_SIZE wxSize(800, 600) 
-#define FRAME_STYLE wxDEFAULT_FRAME_STYLE|wxMAXIMIZE|wxTAB_TRAVERSAL
+#include <iostream>
 
-Window::Window() : wxFrame(FRAME_PARENT, FRAME_ID, FRAME_TITLE, FRAME_POSITION, FRAME_SIZE, FRAME_STYLE) {
-	reader = new WAVReader();
-	sound = reader->ReadFileData("E:/Programing/Projects/SoundEditor/src/audio/","sample.wav");
+#define PARENT NULL
+#define ID wxID_ANY
+#define TITLE "Sound Editor"
+#define WINODW_POSITION wxDefaultPosition
+#define WINDOW_SIZE wxSize(800, 600) 
 
+Window::Window()
+    : wxFrame(PARENT, ID, TITLE, WINODW_POSITION, WINDOW_SIZE)
+{
+    reader = new WAVReader();
+	sound = reader->ReadFileData("/home/nikola/Desktop/Projects/SoundEditor/src/audio/","sample.wav");
+
+    WAV_HEADER* header = sound->header;
+
+    printf("%d \n", header->FMT_num_channels); 
+    printf("%d \n", header->FMT_sample_rate); 
+    printf("%d \n", header->FMT_byte_rate); 
+    printf("%d \n", header->DATA_chunk_size); 
+    
 	wxTextCtrl* text = new wxTextCtrl(this, wxID_ANY, "", wxPoint(30, 30), wxSize(300, 50));
 	text->SetValue(std::to_string(sound->header->DATA_chunk_size));
 	wxTextCtrl* text2 = new wxTextCtrl(this, wxID_ANY, "", wxPoint(30, 90), wxSize(300, 50));
 	text2->SetValue(std::to_string(sound->data->size()));
-
 }
 
-Window::~Window() {
-	delete reader;
-	delete sound;
+void Window::OnExit(wxCommandEvent &event)
+{
+   Close(true);
 }
