@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Window.h"
-
 class SoundEditor : public wxApp
 {
 public:

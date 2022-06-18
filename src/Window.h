@@ -15,12 +15,4 @@ public:
 private:
     WAVReader* reader = nullptr;
 	WAV_FILE* sound = nullptr;
-
-    void OnExit(wxCommandEvent &event);
-    wxDECLARE_EVENT_TABLE();
-};
-
-enum
-{
-    ID_Hello = 1
 };

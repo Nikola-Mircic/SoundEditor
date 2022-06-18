@@ -2,9 +2,6 @@
 
 #include "Window.h"
 
-wxBEGIN_EVENT_TABLE(Window, wxFrame)
-    EVT_MENU(wxID_EXIT, Window::OnExit)
-wxEND_EVENT_TABLE()
 wxIMPLEMENT_APP(SoundEditor);
 
 bool SoundEditor::OnInit()
