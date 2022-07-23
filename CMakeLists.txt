@@ -13,7 +13,7 @@ set(STAGED_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/stage)
 add_subdirectory(thirdparty)
 
 include(ExternalProject)
-ExternalProject_Add(${PROJECT_NAME}_core
+ExternalProject_Add(${PROJECT_NAME}
   DEPENDS
     wxWidgets_external
   SOURCE_DIR

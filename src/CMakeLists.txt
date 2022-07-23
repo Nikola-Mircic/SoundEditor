@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
 
-project(SoundEditor_core LANGUAGES CXX)
+project(SoundEditor LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -14,7 +14,7 @@ set(wxWidgets_USE_STATIC 1)
 
 find_package(wxWidgets REQUIRED)
 
-set(SRCS SoundEditor.cpp Window.cpp "audio/WAVReader.cpp")
+set(SRCS SoundEditor.cpp Window.cpp "audio/WAVReader.cpp" "audio/Player.cpp")
 
 include(${wxWidgets_USE_FILE})
 
@@ -30,5 +30,8 @@ else()
     add_executable(${PROJECT_NAME} WIN32 ${SRCS})
 endif()
 
+target_include_directories(${PROJECT_NAME} PUBLIC "../thirdparty/portaudio")
+
 target_link_libraries(${PROJECT_NAME} PUBLIC ${wxWidgets_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC portaudio)
 
