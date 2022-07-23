@@ -15,4 +15,6 @@ public:
 private:
     WAVReader* reader = nullptr;
 	WAV_FILE* sound = nullptr;
+
+    void DrawSoundData(WAV_FILE* sound);
 };

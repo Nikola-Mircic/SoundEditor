@@ -8,23 +8,33 @@
 #define WINODW_POSITION wxDefaultPosition
 #define WINDOW_SIZE wxSize(800, 600) 
 
+void PlaySound(WAV_FILE* data);
+
 Window::Window()
     : wxFrame(PARENT, ID, TITLE, WINODW_POSITION, WINDOW_SIZE)
 {
     reader = new WAVReader();
 
 	sound = reader->ReadFileData("/home/nikola/Desktop/Projects/SoundEditor/src/audio/","sample.wav");
-
-    WAV_HEADER* header = sound->header;
     
-	wxTextCtrl* RIFF_chunk_ID = new wxTextCtrl(this, wxID_ANY, "", wxPoint(30, 30), wxSize(300, 50));
+    std::cout << "\n\t Playing sound... \n";
+
+    std::cout << "\t Sound size: " << sound->data->size() << std::endl;
+
+    PlaySound(sound);
+
+    DrawSoundData(sound);
+}
+
+void Window::DrawSoundData(WAV_FILE* sound){
+    wxTextCtrl* RIFF_chunk_ID = new wxTextCtrl(this, wxID_ANY, "", wxPoint(30, 30), wxSize(300, 50));
 	RIFF_chunk_ID->SetValue(std::to_string(sound->header->RIFF_chunk_ID));
 	
     wxTextCtrl* RIFF_chunk_size = new wxTextCtrl(this, wxID_ANY, "", wxPoint(30, 90), wxSize(300, 50));
 	RIFF_chunk_size->SetValue(std::to_string(sound->header->RIFF_chunk_size));
 
     wxTextCtrl* RIFF_format = new wxTextCtrl(this, wxID_ANY, "", wxPoint(30, 150), wxSize(300, 50));
-	RIFF_format->SetValue(std::to_string(std::hex(sound->header->RIFF_format)));
+	RIFF_format->SetValue(std::to_string(sound->header->RIFF_format));
 
     wxTextCtrl* FMT_chunk_ID = new wxTextCtrl(this, wxID_ANY, "", wxPoint(350, 30), wxSize(300, 50));
 	FMT_chunk_ID->SetValue(std::to_string(sound->header->FMT_chunk_ID));
