@@ -30,8 +30,6 @@ WAV_FILE* WAVReader::ReadFileData(std::string url, std::string filename) {
 			// Read the data
 			temp->data = new std::vector<char>(temp->header->DATA_chunk_size);
 
-			fseek(file, bytesRead, SEEK_SET);
-
 			bytesRead = fread(temp->data->data(), 1, temp->header->DATA_chunk_size, file);
 		}
 
