@@ -28,7 +28,7 @@ struct WAV_HEADER {
 
 struct WAV_FILE {
 	WAV_HEADER* header;
-	std::vector<char>* data;
+	std::vector<short>* data;
 };
 
 class WAVReader {
