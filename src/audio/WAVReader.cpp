@@ -28,9 +28,9 @@ WAV_FILE* WAVReader::ReadFileData(std::string url, std::string filename) {
 
 		if (bytesRead > 0){
 			// Read the data
-			temp->data = new std::vector<char>(temp->header->DATA_chunk_size);
+			temp->data = new std::vector<short>(temp->header->DATA_chunk_size/2);
 
-			bytesRead = fread(temp->data->data(), 1, temp->header->DATA_chunk_size, file);
+			bytesRead = fread(temp->data->data(), 2, temp->header->DATA_chunk_size, file);
 		}
 
 		fclose(file);
