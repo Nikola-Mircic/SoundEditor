@@ -1,13 +1,5 @@
 #include "Window.h"
 
-#include <iostream>
-
-#define PARENT NULL
-#define ID wxID_ANY
-#define TITLE "Sound Editor"
-#define WINODW_POSITION wxDefaultPosition
-#define WINDOW_SIZE wxSize(1000, 700) 
-
 BEGIN_EVENT_TABLE (Window, wxFrame)
     EVT_BUTTON ( PLAY_BUTTON, Window::Play)
 END_EVENT_TABLE()
@@ -81,5 +73,6 @@ void Window::DrawSoundData(WAV_FILE* sound){
 
 
 void Window::Play(wxCommandEvent& event ){
-    PlaySoundSDL2("./sample.wav");
+    this->futurePlay = std::async(std::launch::async, PlaySoundSDL2, "./sample.wav");
+    
 }
