@@ -47,12 +47,6 @@ void Player::loadData(){
 }
 
 void Player::handleSound(bool* playing, AudioData* sound){
-    std::cout << "\n*============================================================*\n";
-    std::cout << "\n\t File format: " << sound->spec->format << std::endl;
-
-    std::cout << "\n\t File frequency: " << sound->spec->freq << std::endl;
-    std::cout << "\n*============================================================*\n";
-
 	SDL_AudioDeviceID deviceID = SDL_OpenAudioDevice(NULL, 0, sound->spec, NULL, SDL_AUDIO_ALLOW_ANY_CHANGE);
 
     if(deviceID == 0){
@@ -69,8 +63,6 @@ void Player::handleSound(bool* playing, AudioData* sound){
     *playing = false;
 
     SDL_CloseAudioDevice(deviceID);
-
-    std::cout << "HandleSound finished! \n";
 }
 
 void Player::playSound(const char* filePath){
