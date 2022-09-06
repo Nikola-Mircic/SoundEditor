@@ -2,20 +2,28 @@
 
 BEGIN_EVENT_TABLE (Window, wxFrame)
     EVT_BUTTON ( PLAY_BUTTON, Window::Play)
+    EVT_BUTTON ( RESTART_BUTTON, Window::Restart)
+    EVT_BUTTON ( CONTINUE_BUTTON, Window::Continue)
+    EVT_BUTTON ( STOP_BUTTON, Window::Stop)
 END_EVENT_TABLE()
 
 Window::Window()
     : wxFrame(PARENT, ID, TITLE, WINODW_POSITION, WINDOW_SIZE)
 {
     reader = new WAVReader();
+    player = new Player();
 
-	sound = reader->ReadFileData("/home/nikola/Desktop/Projects/SoundEditor/src/audio/","sample.wav");
+	sound = reader->ReadFileData("./","sample.wav");
     
     std::cout << "\n\t Playing sound... \n";
 
     std::cout << "\t Sound size: " << sound->data->size() << std::endl;
 
     DrawSoundData(sound);
+}
+
+Window::~Window(){
+    delete player;
 }
 
 void Window::DrawSoundData(WAV_FILE* sound){
@@ -69,10 +77,30 @@ void Window::DrawSoundData(WAV_FILE* sound){
 
     wxButton* PlayButton = new wxButton(this, PLAY_BUTTON, _T("Play sound"),
     wxPoint(720, 110), wxSize(200, 50), 0);
+
+    wxButton* StopButton = new wxButton(this, STOP_BUTTON, _T("Stop sound"),
+    wxPoint(720, 170), wxSize(200, 50), 0);
+
+    wxButton* ContinueButton = new wxButton(this, CONTINUE_BUTTON, _T("Continue sound"),
+    wxPoint(720, 230), wxSize(200, 50), 0);
+
+    wxButton* RestartButton = new wxButton(this, RESTART_BUTTON, _T("Restart sound"),
+    wxPoint(720, 290), wxSize(200, 50), 0);
 }
 
 
 void Window::Play(wxCommandEvent& event ){
-    this->futurePlay = std::async(std::launch::async, PlaySoundSDL2, "./sample.wav");
-    
+    player->playSound("./sample.wav");
+}
+
+void Window::Restart(wxCommandEvent& event ){
+    player->restartSound();
+}
+
+void Window::Continue(wxCommandEvent& event ){
+    player->continueSound();
+}
+
+void Window::Stop(wxCommandEvent& event ){
+    player->stopSound();
 }
