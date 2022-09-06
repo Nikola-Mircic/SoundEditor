@@ -1,68 +1,59 @@
-#include "portaudio.h"
+#include "Player.h"
 
-#include "WAVReader.h"
+#include <thread>
 
-#include <iostream>
+Player::Player(){
+    SDL_Init(SDL_INIT_AUDIO);
 
-#include <chrono>
-#include <ctime>
+    this->soundData = new AudioData;
+    this->soundData->spec = new SDL_AudioSpec;
 
-#include <cmath>
+    this->filePath = "";
+    this->playing = false;
+}
 
-#include <SDL2/SDL.h>
+Player::~Player(){
+	if(soundData->dataPos)
+        SDL_FreeWAV(soundData->dataPos);
+    SDL_Quit();
 
-#define RUN(CMD) if(!CMD) { \
-                    printf("|\n| [%d] PortAudio error: %s\n|\n", __LINE__, SDL_GetError()); \
-                    return; \
-                 }
+    delete soundData;
+}
 
-struct AudioData{
-    Uint8* pos;
-    Uint32 length;
-};
-
-void CallbackFunc(void* userData, Uint8* stream, int streamLength){
+static void callbackFunc(void* userData, Uint8* stream, int streamLength){
     AudioData* data = (AudioData*) userData;
 
-    if(data->length == 0)
+    if(data->currentLength == 0)
         return;
 
     Uint32 length = (Uint32) streamLength;
 
-    length = (length > data->length) ? data->length : length;
+    length = (length > data->currentLength) ? data->currentLength : length;
 
-    SDL_memcpy(stream, data->pos, length);
+    SDL_memcpy(stream, data->currentPos, length);
 
-    data->pos += length;
-    data->length -= length;
+    data->currentPos += length;
+    data->currentLength -= length;
 }
 
-void PlaySoundSDL2(const char* FILE_PATH){
-    // Just to make sure SDL is working
-	SDL_Init(SDL_INIT_AUDIO);
+void Player::loadData(){
+    RUN( SDL_LoadWAV(filePath, soundData->spec,
+                               &soundData->dataPos,
+                               &soundData->dataLength) )
 
-	SDL_AudioSpec wavSpec;
-	Uint8* wavStart;
-	Uint32 wavLength;
 
-	RUN( SDL_LoadWAV(FILE_PATH, &wavSpec, &wavStart, &wavLength) )
+    soundData->spec->callback = callbackFunc;
+    soundData->spec->userdata = soundData;
+}
 
-	AudioData data;
-    data.pos = wavStart;
-    data.length = wavLength;
-
-    wavSpec.callback = CallbackFunc;
-    wavSpec.userdata = &data;
-
+void Player::handleSound(bool* playing, AudioData* sound){
     std::cout << "\n*============================================================*\n";
-    std::cout << "\n\t Playing a file: " << FILE_PATH << std::endl;
+    std::cout << "\n\t File format: " << sound->spec->format << std::endl;
 
-    std::cout << "\n\t File format: " << wavSpec.format << std::endl;
-
-    std::cout << "\n\t File frequency: " << wavSpec.freq << std::endl;
+    std::cout << "\n\t File frequency: " << sound->spec->freq << std::endl;
     std::cout << "\n*============================================================*\n";
 
-	SDL_AudioDeviceID deviceID = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, SDL_AUDIO_ALLOW_ANY_CHANGE);
+	SDL_AudioDeviceID deviceID = SDL_OpenAudioDevice(NULL, 0, sound->spec, NULL, SDL_AUDIO_ALLOW_ANY_CHANGE);
 
     if(deviceID == 0){
         std::cerr << "Error loading a device...";
@@ -71,12 +62,58 @@ void PlaySoundSDL2(const char* FILE_PATH){
 
     SDL_PauseAudioDevice(deviceID, 0);
 
-    while(data.length > 0){
+    while(*playing && sound->currentLength > 0){
         SDL_Delay(100);
     }
 
-    SDL_CloseAudioDevice(deviceID);
-	SDL_FreeWAV(wavStart);
+    *playing = false;
 
-	SDL_Quit();
+    SDL_CloseAudioDevice(deviceID);
+
+    std::cout << "HandleSound finished! \n";
+}
+
+void Player::playSound(const char* filePath){
+    if(this->playing)
+        return;
+    
+    this->filePath = filePath;
+    this->playing = true;
+
+    loadData();
+
+    soundData->currentPos = soundData->dataPos;
+    soundData->currentLength = soundData->dataLength;
+
+    this->futureCall = std::async(std::launch::async, 
+                                  handleSound, &playing, soundData);                               
+}
+
+void Player::restartSound(){
+    soundData->currentPos = soundData->dataPos;
+    soundData->currentLength = soundData->dataLength;
+
+    if(!this->playing){
+        this->playing = true;
+
+        this->futureCall = std::async(std::launch::async, 
+                                  handleSound, &playing, soundData);
+    }
+}
+
+void Player::continueSound(){
+    if(this->playing)
+        return;
+    
+    this->playing = true;
+
+    this->futureCall = std::async(std::launch::async, 
+                                  handleSound, &playing, soundData);
+}
+
+void Player::stopSound(){
+    if(!this->playing)
+        return;
+    
+    this->playing = false;
 }
