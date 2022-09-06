@@ -14,10 +14,6 @@ Window::Window()
     player = new Player();
 
 	sound = reader->ReadFileData("./","sample.wav");
-    
-    std::cout << "\n\t Playing sound... \n";
-
-    std::cout << "\t Sound size: " << sound->data->size() << std::endl;
 
     DrawSoundData(sound);
 }
