@@ -9,6 +9,7 @@ WAVReader::WAVReader() {
 }
 
 WAVReader::~WAVReader() {
+	delete sound;
 }
 
 WAV_FILE* WAVReader::GetLastSound() {

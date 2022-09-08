@@ -17,6 +17,9 @@ Player::~Player(){
         SDL_FreeWAV(soundData->dataPos);
     SDL_Quit();
 
+    playing = false;
+
+    delete soundData->spec;
     delete soundData;
 }
 

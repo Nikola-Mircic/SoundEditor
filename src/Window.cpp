@@ -19,6 +19,7 @@ Window::Window()
 }
 
 Window::~Window(){
+    delete reader;
     delete player;
 }
 
