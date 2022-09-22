@@ -16,10 +16,10 @@ WAV_FILE* WAVReader::GetLastSound() {
 	return sound;
 }
 
-WAV_FILE* WAVReader::ReadFileData(std::string url, std::string filename) {
+WAV_FILE* WAVReader::ReadFileData(std::string url) {
 	WAV_FILE* temp = new WAV_FILE();
 
-	FILE* file = fopen(url.append(filename).c_str(), "r+");
+	FILE* file = fopen(url.c_str(), "r+");
 
 	if (file != NULL) {
 		// Read the header

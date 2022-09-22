@@ -36,7 +36,7 @@ public:
 	WAVReader();
 	~WAVReader();
 public:
-	WAV_FILE* ReadFileData(std::string url, std::string filename);
+	WAV_FILE* ReadFileData(std::string url);
 	WAV_FILE* GetLastSound();
 private:
 	WAV_FILE* sound;
