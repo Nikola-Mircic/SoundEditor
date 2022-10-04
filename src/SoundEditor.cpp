@@ -1,6 +1,6 @@
 #include "SoundEditor.h"
 
-#include "Window.h"
+#include "./window/Window.h"
 
 wxIMPLEMENT_APP(SoundEditor);
 

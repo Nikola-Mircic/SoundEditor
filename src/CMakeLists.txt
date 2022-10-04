@@ -36,7 +36,7 @@ find_package(wxWidgets REQUIRED)
 
 find_package(SDL2 REQUIRED)
 
-set(SRCS SoundEditor.cpp Window.cpp "audio/WAVReader.cpp" "audio/Player.cpp")
+set(SRCS SoundEditor.cpp "window/Window.cpp" "audio/WAVReader.cpp" "audio/Player.cpp")
 
 include(${wxWidgets_USE_FILE})
 

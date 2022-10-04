@@ -5,15 +5,19 @@ BEGIN_EVENT_TABLE (Window, wxFrame)
     EVT_BUTTON ( RESTART_BUTTON, Window::Restart)
     EVT_BUTTON ( CONTINUE_BUTTON, Window::Continue)
     EVT_BUTTON ( STOP_BUTTON, Window::Stop)
+    EVT_BUTTON ( LOAD_FILE_BUTTON, Window::LoadFile)
 END_EVENT_TABLE()
 
+
+std::future<void> animation;
+
 Window::Window()
-    : wxFrame(PARENT, ID, TITLE, WINODW_POSITION, WINDOW_SIZE)
+    : wxFrame(PARENT, ID, TITLE, WINODW_POSITION, WINDOW_SIZE, WINDOW_STYLE)
 {
     reader = new WAVReader();
     player = new Player();
 
-	sound = reader->ReadFileData("./","sample.wav");
+    sound = nullptr;
 
     DrawSoundData(sound);
 }
@@ -23,7 +27,31 @@ Window::~Window(){
     delete player;
 }
 
+std::string soundPath = "";
+
+void Window::LoadFile(wxCommandEvent& event){
+     wxFileDialog 
+        openFileDialog(this, _("Load a WAV file"), "", "",
+                       "Wav files (*.wav)|*.wav", wxFD_OPEN);
+    if (openFileDialog.ShowModal() == wxID_CANCEL)
+        return; 
+
+    soundPath = openFileDialog.GetPath().ToStdString();
+
+    sound = reader->ReadFileData(soundPath);
+
+    DrawSoundData(sound);
+}
+
 void Window::DrawSoundData(WAV_FILE* sound){
+    if(!sound){
+        wxButton* LoadFileButton = new wxButton(this, LOAD_FILE_BUTTON, _T("Find file"),
+        wxPoint(200, 200), wxSize(200, 50), 0);
+        return;
+    }
+
+    this->DestroyChildren();
+
     wxStaticText* staticText = new wxStaticText(this, wxID_ANY, "RIFF_chunk_ID", wxPoint(30, 10));
     wxTextCtrl* RIFF_chunk_ID = new wxTextCtrl(this, wxID_ANY, "", wxPoint(30, 30), wxSize(300, 50));
 	RIFF_chunk_ID->SetValue(std::to_string(sound->header->RIFF_chunk_ID));
@@ -83,11 +111,32 @@ void Window::DrawSoundData(WAV_FILE* sound){
 
     wxButton* RestartButton = new wxButton(this, RESTART_BUTTON, _T("Restart sound"),
     wxPoint(720, 290), wxSize(200, 50), 0);
+
+    wxButton* LoadFileButton = new wxButton(this, LOAD_FILE_BUTTON, _T("Find file"),
+    wxPoint(720, 350), wxSize(200, 50), 0);
+}   
+
+int r = 2, step = 2;
+
+void Window::DrawAnimation(long long value, double freq){
+    wxClientDC clientdc(this);
+
+    clientdc.SetBrush(wxBrush(wxColor(150, 150, 150)));
+    clientdc.SetPen(wxPen(wxColor(150, 150, 150)));
+    clientdc.DrawRectangle(50, 450, 100, 100);
+
+    clientdc.SetBrush(wxBrush(wxColor(200, 10, 10)));
+    clientdc.SetPen(wxPen(wxColor(200, 10, 10)));
+    clientdc.DrawCircle(100, 500, r);
+
+    if(r>= 50 || r<=0)
+        step=-step;
+
+    r+=step;
 }
 
-
 void Window::Play(wxCommandEvent& event ){
-    player->playSound("./sample.wav");
+    player->playSound(soundPath.c_str());
 }
 
 void Window::Restart(wxCommandEvent& event ){

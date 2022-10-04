@@ -2,7 +2,7 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #pragma once
 
-#include "Window.h"
+#include "./window/Window.h"
 class SoundEditor : public wxApp
 {
 public:
