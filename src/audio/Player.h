@@ -33,8 +33,12 @@ public:
     void restartSound();
     void continueSound();
 
+    static long long value;
+    static double freq;
+
     static void handleSound(bool* playing, AudioData* sound);
     void loadData();
+
 private:
     AudioData* soundData;
     const char* filePath;

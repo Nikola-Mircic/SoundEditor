@@ -23,6 +23,11 @@ Player::~Player(){
     delete soundData;
 }
 
+long long Player::value = 0;
+double Player::freq = 1;
+
+static int lastSample = 0;
+
 static void callbackFunc(void* userData, Uint8* stream, int streamLength){
     AudioData* data = (AudioData*) userData;
 
@@ -33,7 +38,28 @@ static void callbackFunc(void* userData, Uint8* stream, int streamLength){
 
     length = (length > data->currentLength) ? data->currentLength : length;
 
-    SDL_memcpy(stream, data->currentPos, length);
+    /*SDL_memcpy(stream, data->currentPos, length);*/
+
+    Player::value = 0;
+    Player::freq = 0;
+
+    for(int i=0;i<length;++i){
+        *(stream+i) = *(data->currentPos+i);
+        if(i%2==0){
+            int sample = *(stream+i-1)<<8 + *(stream+i);
+            
+            if(lastSample*sample <= 0){
+                Player::freq+=1;
+            }
+            
+            lastSample = (sample>=0) ? 1 : -1;
+
+            Player::value += sample;
+        }
+    }
+
+    std::cout << "Avg. value: " << Player::value/length*2 << "\n";
+    std::cout << "Avg. freq: " << Player::freq/length*2.0 << "\n";
 
     data->currentPos += length;
     data->currentLength -= length;
@@ -67,6 +93,7 @@ void Player::handleSound(bool* playing, AudioData* sound){
 
     SDL_CloseAudioDevice(deviceID);
 }
+
 
 void Player::playSound(const char* filePath){
     if(this->playing)
