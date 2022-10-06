@@ -15,6 +15,7 @@
 #include <chrono>
 
 #include "../audio/Player.h"
+#include "Animator.h"
 
 #define PLAY_BUTTON 0xb1
 #define RESTART_BUTTON 0xb2
@@ -47,6 +48,7 @@ private:
 	WAV_FILE* sound = nullptr;
 
     Player* player;
+    Animator* animator;
 
     void DrawSoundData(WAV_FILE* sound);
 
