@@ -17,42 +17,44 @@ void Animator::SetData(long long value, double freq){
     this->freq = freq;
 }
 
+void Animator::TimerStart(){
+    Start(30);
+}
+
+void Animator::Notify(){
+    Draw();
+}
+
 void Animator::ActivateRenderLoop(bool on){
     if(on && !rendering)
     {   
-        std::cout << "\n--> Activated! \n\n";
-        Connect( wxID_ANY, wxEVT_IDLE, wxIdleEventHandler(Animator::Render) );
+        TimerStart();
         rendering = true;
     }
     else if(!on && rendering)
     {   
-        std::cout << "\n--> Stoped! \n\n";
-        Disconnect( wxEVT_IDLE, wxIdleEventHandler(Animator::Render) );
+        Stop();
         rendering = false;
     }
 }
 
 int r = 2, step = 2;
 
-void Animator::Render(wxIdleEvent& event){
+void Animator::Draw(){
     if(rendering){
-        std::cout << " \n---> Animating ... \n\n";
+        wxClientDC dc(window);
 
-        wxClientDC clientdc(this->window);
+        dc.SetBrush(wxBrush(window->GetBackgroundColour()));
+        dc.SetPen(wxPen(window->GetBackgroundColour(), 3));
+        dc.DrawRectangle(50, 450, 100, 100);
 
-        clientdc.SetBrush(wxBrush(wxColor(150, 150, 150)));
-        clientdc.SetPen(wxPen(wxColor(150, 150, 150)));
-        clientdc.DrawRectangle(50, 450, 100, 100);
-
-        clientdc.SetBrush(wxBrush(wxColor(200, 10, 10)));
-        clientdc.SetPen(wxPen(wxColor(200, 10, 10)));
-        clientdc.DrawCircle(100, 500, r);
+        dc.SetBrush(wxBrush(wxColor(200, 10, 10)));
+        dc.SetPen(wxPen(wxColor(200, 10, 10)));
+        dc.DrawCircle(100, 500, r);
 
         if(r>= 50 || r<=0)
             step=-step;
 
         r+=step;
-
-        event.RequestMore();
     }
 }
