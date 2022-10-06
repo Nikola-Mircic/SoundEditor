@@ -6,7 +6,7 @@
 
 #include "wx/wx.h"
 
-class Animator : wxEvtHandler{
+class Animator : public wxTimer{
 public:
     Animator(wxWindow* window);
     ~Animator();
@@ -14,7 +14,10 @@ public:
     void SetData(long long value, double freq);
     void ActivateRenderLoop(bool on);
 
-    void Render(wxIdleEvent& event);
+    void Notify();
+    void TimerStart();
+
+    void Draw();
 private:
     std::mutex dataMutex;
 
@@ -22,5 +25,5 @@ private:
     double freq;
 
     wxWindow* window;
-    bool rendering;
+    bool rendering = false;
 };

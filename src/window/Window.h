@@ -28,7 +28,7 @@
 #define TITLE "Sound Editor"
 #define WINODW_POSITION wxDefaultPosition
 #define WINDOW_SIZE wxSize(1000, 700) 
-#define WINDOW_STYLE wxMAXIMIZE | wxDEFAULT_FRAME_STYLE
+#define WINDOW_STYLE wxDEFAULT_FRAME_STYLE | wxMAXIMIZE
 
 class Window : public wxFrame
 {

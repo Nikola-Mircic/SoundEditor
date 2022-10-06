@@ -57,8 +57,6 @@ void Window::DrawSoundData(WAV_FILE* sound){
 
     this->DestroyChildren();
 
-    animator->ActivateRenderLoop(true);
-
     wxStaticText* staticText = new wxStaticText(this, wxID_ANY, "RIFF_chunk_ID", wxPoint(30, 10));
     wxTextCtrl* RIFF_chunk_ID = new wxTextCtrl(this, wxID_ANY, "", wxPoint(30, 30), wxSize(300, 50));
 	RIFF_chunk_ID->SetValue(std::to_string(sound->header->RIFF_chunk_ID));
@@ -124,6 +122,8 @@ void Window::DrawSoundData(WAV_FILE* sound){
 }   
 
 void Window::Play(wxCommandEvent& event ){
+    animator->ActivateRenderLoop(true);
+
     player->playSound(soundPath.c_str());
 }
 
