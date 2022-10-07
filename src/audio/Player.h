@@ -6,6 +6,7 @@
 #include <SDL2/SDL.h>
 
 #include "WAVReader.h"
+#include "../window/Animator.h"
 
 #define RUN(CMD) if(!CMD) { \
                     printf("|\n| [%d] PortAudio error: %s\n|\n", __LINE__, SDL_GetError()); \
@@ -24,7 +25,7 @@ struct AudioData{
 
 class Player{
 public:
-    Player();
+    Player(Animator* animator);
 
     ~Player();
 
@@ -33,12 +34,13 @@ public:
     void restartSound();
     void continueSound();
 
-    static long long value;
+    static double value;
     static double freq;
 
+    static Animator* animator;
     static void handleSound(bool* playing, AudioData* sound);
+    
     void loadData();
-
 private:
     AudioData* soundData;
     const char* filePath;

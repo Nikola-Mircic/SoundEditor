@@ -1,5 +1,7 @@
 #include "Animator.h"
 
+#include <cmath>
+
 Animator::Animator(wxWindow* window){
     this->window = window;
 
@@ -10,7 +12,7 @@ Animator::~Animator(){
 
 }
 
-void Animator::SetData(long long value, double freq){
+void Animator::SetData(double value, double freq){
     std::lock_guard<std::mutex> dataGuard(dataMutex);
     
     this->value = value;
@@ -38,23 +40,26 @@ void Animator::ActivateRenderLoop(bool on){
     }
 }
 
-int r = 2, step = 2;
+double last_r=0;
 
 void Animator::Draw(){
     if(rendering){
+        int r = std::abs(value/40);
+
+        int green = 100 + freq*155/100;
+        int blue = std::max(green-255, 0);
+        green = std::min(green, 255);
+
         wxClientDC dc(window);
 
         dc.SetBrush(wxBrush(window->GetBackgroundColour()));
         dc.SetPen(wxPen(window->GetBackgroundColour(), 3));
-        dc.DrawRectangle(50, 450, 100, 100);
+        dc.DrawCircle(100, 500, last_r);
 
-        dc.SetBrush(wxBrush(wxColor(200, 10, 10)));
-        dc.SetPen(wxPen(wxColor(200, 10, 10)));
+        dc.SetBrush(wxBrush(wxColor(0, green, blue)));
+        dc.SetPen(wxPen(wxColor(0, green, blue)));
         dc.DrawCircle(100, 500, r);
 
-        if(r>= 50 || r<=0)
-            step=-step;
-
-        r+=step;
+        last_r = r;
     }
 }

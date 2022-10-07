@@ -13,12 +13,12 @@ std::future<void> animation;
 
 Window::Window()
     : wxFrame(PARENT, ID, TITLE, WINODW_POSITION, WINDOW_SIZE, WINDOW_STYLE)
-{
-    reader = new WAVReader();
-    player = new Player();
-    
+{   
     animator = new Animator(this);
 
+    reader = new WAVReader();
+    player = new Player(animator);
+    
     sound = nullptr;
 
     DrawSoundData(sound);
