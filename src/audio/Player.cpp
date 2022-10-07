@@ -2,8 +2,12 @@
 
 #include <thread>
 
-Player::Player(){
+Animator* Player::animator = nullptr;
+
+Player::Player(Animator* animator){
     SDL_Init(SDL_INIT_AUDIO);
+
+    this->animator = animator;
 
     this->soundData = new AudioData;
     this->soundData->spec = new SDL_AudioSpec;
@@ -23,7 +27,7 @@ Player::~Player(){
     delete soundData;
 }
 
-long long Player::value = 0;
+double Player::value = 0;
 double Player::freq = 1;
 
 static int lastSample = 0;
@@ -46,20 +50,30 @@ static void callbackFunc(void* userData, Uint8* stream, int streamLength){
     for(int i=0;i<length;++i){
         *(stream+i) = *(data->currentPos+i);
         if(i%2==0){
-            int sample = *(stream+i-1)<<8 + *(stream+i);
+            short sample = *(stream+i+1)<<8 | *(stream+i);
             
+            sample = std::abs(sample);
+
             if(lastSample*sample <= 0){
                 Player::freq+=1;
             }
             
             lastSample = (sample>=0) ? 1 : -1;
 
-            Player::value += sample;
+            Player::value += sample*1.0/(length);
         }
     }
 
-    std::cout << "Avg. value: " << Player::value/length*2 << "\n";
-    std::cout << "Avg. freq: " << Player::freq/length*2.0 << "\n";
+
+    /*std::cout << Player::freq << " -- " << length << " - " << data->spec->freq << "\n";*/
+    Player::freq/=(1.0*length)/(data->spec->freq);
+
+    if(Player::animator){
+        std::cout << "Avg. value: " << Player::value << "\n";
+        std::cout << "Avg. freq: " << Player::freq << "\n";
+
+        Player::animator->SetData(Player::value, Player::freq);
+    }
 
     data->currentPos += length;
     data->currentLength -= length;

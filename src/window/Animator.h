@@ -1,17 +1,19 @@
 #pragma once
 
 #include <iostream>
-
+#include <deque>
 #include <mutex>
 
 #include "wx/wx.h"
+
+typedef std::pair<double, double> sample;
 
 class Animator : public wxTimer{
 public:
     Animator(wxWindow* window);
     ~Animator();
 
-    void SetData(long long value, double freq);
+    void SetData(double value, double freq);
     void ActivateRenderLoop(bool on);
 
     void Notify();
@@ -21,8 +23,10 @@ public:
 private:
     std::mutex dataMutex;
 
-    long long value;
+    double value;
     double freq;
+
+    std::deque<sample> samples;
 
     wxWindow* window;
     bool rendering = false;
