@@ -46,8 +46,8 @@ void Animator::Draw(){
     if(rendering){
         int r = std::abs(value/40);
 
-        int green = 100 + freq*155/100;
-        int blue = std::max(green-255, 0);
+        int green = 150+freq*25;
+        int blue = std::min(255, std::max(green-255, 0));
         green = std::min(green, 255);
 
         wxClientDC dc(window);
