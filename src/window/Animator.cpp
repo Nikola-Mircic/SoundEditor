@@ -1,11 +1,5 @@
 #include "Animator.h"
 
-#include <cmath>
-
-#include <chrono>
-
-#define wxWS_EX_BUFFERED_DRAW 0x00000040
-
 Animator::Animator(wxWindow* window){
     this->window = window;
 
@@ -23,27 +17,14 @@ void Animator::TimerStart(){
 double maxTime = 0;
 
 void Animator::Notify(){
-    auto start = std::chrono::system_clock::now();
     Draw();
-
-    auto end = std::chrono::system_clock::now();
-
-    std::chrono::duration<double> elapsed_seconds = end-start;
-
-    double secs = elapsed_seconds.count();
-
-    if(secs > maxTime){
-        maxTime = secs;
-       /* std::cout << secs << "\n";*/
-    }
 }
 
 void Animator::ActivateRenderLoop(bool on){
     if(on && !rendering)
     {   
         panel = new wxPanel(window, wxID_ANY, {20, 350}, {300, 350});
-        panel->Freeze();
-        //panel->SetExtraStyle(wxWS_EX_BUFFERED_DRAW);
+
         TimerStart();
         rendering = true;
     }

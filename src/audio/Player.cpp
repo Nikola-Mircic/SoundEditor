@@ -42,8 +42,6 @@ static void callbackFunc(void* userData, Uint8* stream, int streamLength){
 
     length = (length > data->currentLength) ? data->currentLength : length;
 
-    /*SDL_memcpy(stream, data->currentPos, length);*/
-
     Player::value = 0;
     Player::freq = 0;
 
@@ -64,15 +62,9 @@ static void callbackFunc(void* userData, Uint8* stream, int streamLength){
         }
     }
 
-
-    /*std::cout << Player::freq << " -- " << length << " - " << data->spec->freq << "\n";*/
     Player::freq/=(1.0*length)/(data->spec->freq);
 
     if(Player::animator){
-        /*std::cout << "Avg. value: " << Player::value << "\n";
-        std::cout << "Avg. freq: " << Player::freq << "\n";
-
-        Player::animator->SetData(Player::value, Player::freq);*/
         sample s = std::make_pair(Player::value, Player::freq);
 
         (Player::animator->tslist).push(s);

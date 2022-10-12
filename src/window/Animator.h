@@ -4,16 +4,14 @@
 #include <iterator>
 #include <list>
 #include <mutex>
+#include <cmath>
 
 #include "wx/wx.h"
-#include <wx/dcbuffer.h>
 
 #define val(s) (s).first // Macro for sample value
 #define freq(s) (s).second // Macro for sample freq
 
 typedef std::pair<double, double> sample; // Sample definition
-
-
 
 class Animator : public wxTimer{
 public:
