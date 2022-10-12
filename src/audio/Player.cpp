@@ -69,10 +69,13 @@ static void callbackFunc(void* userData, Uint8* stream, int streamLength){
     Player::freq/=(1.0*length)/(data->spec->freq);
 
     if(Player::animator){
-        std::cout << "Avg. value: " << Player::value << "\n";
+        /*std::cout << "Avg. value: " << Player::value << "\n";
         std::cout << "Avg. freq: " << Player::freq << "\n";
 
-        Player::animator->SetData(Player::value, Player::freq);
+        Player::animator->SetData(Player::value, Player::freq);*/
+        sample s = std::make_pair(Player::value, Player::freq);
+
+        (Player::animator->tslist).push(s);
     }
 
     data->currentPos += length;
@@ -106,6 +109,9 @@ void Player::handleSound(bool* playing, AudioData* sound){
     *playing = false;
 
     SDL_CloseAudioDevice(deviceID);
+
+    if(animator)
+        animator->ActivateRenderLoop(false); 
 }
 
 
@@ -138,7 +144,7 @@ void Player::restartSound(){
 }
 
 void Player::continueSound(){
-    if(this->playing)
+    if(this->playing || !soundData)
         return;
     
     this->playing = true;
@@ -151,5 +157,7 @@ void Player::stopSound(){
     if(!this->playing)
         return;
     
+    if(animator)
+       animator->ActivateRenderLoop(false); 
     this->playing = false;
 }
