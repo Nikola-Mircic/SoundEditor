@@ -2,8 +2,12 @@ cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
 
 project(SoundEditor LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+
+find_package(Threads REQUIRED)
 
 add_definitions(
 	-c
@@ -46,20 +50,21 @@ include_directories(${SDL2_INCLUDE_DIRS})
 
 if (APPLE)
     # create bundle on apple compiles
-    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SRCS} )
+    add_executable(SoundEditor MACOSX_BUNDLE ${SRCS} )
     # Set a custom plist file for the app bundle - needed for Mac OS Retina display
-    set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist)
+    set_target_properties(SoundEditor PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist)
 else()
     # the WIN32 is needed for Windows in order for it to look for WinMain
     # instead of the main function. This is ignored on other systems,
     # so it works on all platforms
-    add_executable(${PROJECT_NAME} WIN32 ${SRCS})
+    add_executable(SoundEditor WIN32 ${SRCS})
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC "../thirdparty/portaudio")
-
 # Define the link libraries
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SDL2_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${wxWidgets_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} PUBLIC portaudio)
+
+target_link_libraries(SoundEditor PRIVATE Threads::Threads)
+
+target_link_libraries(SoundEditor PUBLIC ${SDL2_LIBRARIES})
+target_link_libraries(SoundEditor PUBLIC ${wxWidgets_LIBRARIES})
+
 
