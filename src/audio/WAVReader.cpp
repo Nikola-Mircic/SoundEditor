@@ -25,21 +25,27 @@ WAV_FILE* WAVReader::ReadFileData(std::string url) {
 		// Read the header
 		temp->header = new WAV_HEADER();
 
+        std::cout << "Reading header ... " << std::endl;
+
 		size_t bytesRead = fread(temp->header, 1, 44, file);
+
+        std::cout << "Reading data ... " << std::endl;
 
 		if (bytesRead > 0){
 			// Read the data
 			temp->data = new std::vector<short>(temp->header->DATA_chunk_size/2);
 
 			bytesRead = fread(temp->data->data(), 2, temp->header->DATA_chunk_size, file);
-		}
 
-		fclose(file);
+
+        }
 
 		sound = temp;
 	}else {
 		std::cout << "Problem opening the file...\n";
 	}
+
+    fclose(file);
 
 	return temp;
 }

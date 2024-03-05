@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include <thread>
+#include <iostream>
 
 Animator* Player::animator = nullptr;
 
@@ -10,7 +11,7 @@ Player::Player(Animator* animator){
     this->animator = animator;
 
     this->soundData = new AudioData;
-    this->soundData->spec = new SDL_AudioSpec;
+    this->soundData->spec = new SDL_AudioSpec();
 
     this->filePath = "";
     this->playing = false;
@@ -67,6 +68,7 @@ static void callbackFunc(void* userData, Uint8* stream, int streamLength){
     if(Player::animator){
         sample s = std::make_pair(Player::value, Player::freq);
 
+        // Push new data to animator
         (Player::animator->tslist).push(s);
     }
 
@@ -75,10 +77,14 @@ static void callbackFunc(void* userData, Uint8* stream, int streamLength){
 }
 
 void Player::loadData(){
-    RUN( SDL_LoadWAV(filePath, soundData->spec,
-                               &soundData->dataPos,
-                               &soundData->dataLength) )
+    std::cout << "Loading from : " << filePath << std::endl;
 
+    SDL_LoadWAV(filePath, soundData->spec, &soundData->dataPos, &soundData->dataLength);
+
+    std::cout << "========> Data loaded <============= " << std::endl;
+    std::cout << "Size: " << soundData->dataLength << " bytes" << std::endl;
+    std::cout << "Chanels: "<< (int) soundData->spec->channels << " @ " << soundData->spec->freq << "Hz" << std::endl;
+    std::cout << "==================================== " << std::endl;
 
     soundData->spec->callback = callbackFunc;
     soundData->spec->userdata = soundData;
@@ -88,7 +94,9 @@ void Player::handleSound(bool* playing, AudioData* sound){
 	SDL_AudioDeviceID deviceID = SDL_OpenAudioDevice(NULL, 0, sound->spec, NULL, SDL_AUDIO_ALLOW_ANY_CHANGE);
 
     if(deviceID == 0){
-        std::cerr << "Error loading a device...";
+        std::cerr << "Error loading a device..." << std::endl;
+
+        std::cerr << SDL_GetError();
         return;
     }
 
@@ -108,9 +116,13 @@ void Player::handleSound(bool* playing, AudioData* sound){
 
 
 void Player::playSound(const char* filePath){
+    std::cout << "Playing sound ... " << std::endl;
+
     if(this->playing)
         return;
-    
+
+    std::cout << filePath << std::endl;
+
     this->filePath = filePath;
     this->playing = true;
 
@@ -119,8 +131,8 @@ void Player::playSound(const char* filePath){
     soundData->currentPos = soundData->dataPos;
     soundData->currentLength = soundData->dataLength;
 
-    this->futureCall = std::async(std::launch::async, 
-                                  handleSound, &playing, soundData);                               
+    std::thread handler(handleSound, &playing, soundData);
+    handler.detach();
 }
 
 void Player::restartSound(){
@@ -130,8 +142,8 @@ void Player::restartSound(){
     if(!this->playing){
         this->playing = true;
 
-        this->futureCall = std::async(std::launch::async, 
-                                  handleSound, &playing, soundData);
+        std::thread handler(handleSound, &playing, soundData);
+        handler.detach();
     }
 }
 
@@ -141,8 +153,8 @@ void Player::continueSound(){
     
     this->playing = true;
 
-    this->futureCall = std::async(std::launch::async, 
-                                  handleSound, &playing, soundData);
+    std::thread handler(handleSound, &playing, soundData);
+    handler.detach();
 }
 
 void Player::stopSound(){
