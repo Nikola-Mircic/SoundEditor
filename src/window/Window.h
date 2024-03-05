@@ -6,11 +6,9 @@
 #endif
 
 #include <wx/stattext.h>
-#include <wx/pen.h>
 #include <wx/filedlg.h>
 
 #include <iostream>
-#include <future>
 #include <thread>
 #include <chrono>
 
@@ -41,8 +39,6 @@ public:
     void Continue(wxCommandEvent& event );
     void Stop(wxCommandEvent& event );
     void LoadFile(wxCommandEvent& event );
-
-    void DrawAnimation(long long value, double freq);
 private:
     WAVReader* reader = nullptr;
 	WAV_FILE* sound = nullptr;
