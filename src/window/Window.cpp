@@ -13,12 +13,8 @@ std::future<void> animation;
 
 Window::Window()
     : wxFrame(PARENT, ID, TITLE, WINODW_POSITION, WINDOW_SIZE, WINDOW_STYLE)
-{   
-    animator = new Animator(this);
-
+{
     reader = new WAVReader();
-    player = new Player(animator);
-    
     sound = nullptr;
 
     DrawSoundData(sound);
@@ -46,11 +42,15 @@ void Window::LoadFile(wxCommandEvent& event){
     sound = reader->ReadFileData(soundPath);
 
     DrawSoundData(sound);
+
+    animator = new Animator(this, {30, 250}, {300, 350});
+    player = new Player(animator);
 }
 
 void Window::DrawSoundData(WAV_FILE* sound){
+    wxButton* LoadFileButton = nullptr;
     if(!sound){
-        auto* LoadFileButton = new wxButton(this, LOAD_FILE_BUTTON, _T("Find file"),
+        LoadFileButton = new wxButton(this, LOAD_FILE_BUTTON, _T("Find file"),
         wxPoint(200, 200), wxSize(200, 50), 0);
         return;
     }
@@ -117,7 +117,7 @@ void Window::DrawSoundData(WAV_FILE* sound){
     auto* RestartButton = new wxButton(this, RESTART_BUTTON, _T("Restart sound"),
     wxPoint(720, 290), wxSize(200, 50), 0);
 
-    auto* LoadFileButton = new wxButton(this, LOAD_FILE_BUTTON, _T("Find file"),
+    LoadFileButton = new wxButton(this, LOAD_FILE_BUTTON, _T("Find file"),
     wxPoint(720, 350), wxSize(200, 50), 0);
 }
 

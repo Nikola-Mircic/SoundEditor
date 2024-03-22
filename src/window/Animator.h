@@ -13,17 +13,19 @@
 
 typedef std::pair<double, double> sample; // Sample definition
 
-class Animator : public wxTimer{
+class Animator : public wxPanel{
 public:
-    Animator(wxWindow* window);
+    Animator(wxFrame* window);
+    Animator(wxFrame* window, wxPoint pos, wxSize size);
     ~Animator();
 
+    void RenderLoop();
     void ActivateRenderLoop(bool on);
 
-    void Notify();
-    void TimerStart();
+    void PaintEvent(wxPaintEvent & evt);
+    void PaintNow();
 
-    void Draw();
+    void Draw(wxDC& dc);
 
     struct TSList{
         std::mutex dataMutex;
@@ -38,13 +40,18 @@ public:
 
         sample& back();
 
-        void forEach(void (*func)(sample, int));
+        void forEach(std::function<void(sample, int)> func);
 
         size_t size();
     } tslist;
 
+    wxWindow *getWindow() const;
+    void setWindow(wxWindow *window);
+
+    DECLARE_EVENT_TABLE();
 private:
     wxPanel* panel;
     wxWindow* window;
+
     bool rendering = false;
 };
