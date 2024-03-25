@@ -42,7 +42,10 @@ find_package(SDL2 REQUIRED)
 
 #set(SRCS SoundEditor.cpp "window/Window.cpp" "audio/WAVReader.cpp" "audio/Player.cpp")
 
-file(GLOB SRCS "*.cpp" "./*/*.cpp")
+file(GLOB SRCS SoundEditor.cpp
+				"window/Window.cpp"
+				"window/panels/*.cpp"
+				"audio/*.cpp")
 
 include(${wxWidgets_USE_FILE})
 

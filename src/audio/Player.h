@@ -6,7 +6,7 @@
 #include <SDL2/SDL.h>
 
 #include "WAVReader.h"
-#include "../window/Animator.h"
+#include "../window/panels/Animator.h"
 
 #define RUN(CMD) if(!CMD) { \
                     printf("|\n| [%d] PortAudio error: %s\n|\n", __LINE__, SDL_GetError()); \
