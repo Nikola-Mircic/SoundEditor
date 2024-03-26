@@ -116,10 +116,10 @@ void Player::handleSound(bool* playing, AudioData* sound){
 
 
 void Player::playSound(const char* filePath){
-    std::cout << "Playing sound ... " << std::endl;
-
     if(this->playing)
         return;
+
+    std::cout << "Playing sound ... " << std::endl;
 
     std::cout << filePath << std::endl;
 

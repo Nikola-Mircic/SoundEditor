@@ -64,7 +64,7 @@ void DataPanel::UseData(WAV_FILE *data) {
 
     addLabelFieldPair(dataSizer, "Bits per sample", std::to_string(data->header->FMT_bits_per_sample));
 
-    addLabelFieldPair(dataSizer, "Chunk size", std::to_string(data->header->DATA_chunk_size));
+    addLabelFieldPair(dataSizer, "Chunk size", std::to_string(data->DATA_chunk_size));
 
     mainSizer->Add(dataSizer, 0, wxALIGN_CENTER_HORIZONTAL);
 
