@@ -1,51 +1,53 @@
 #include "WAVReader.h"
 
 #include <iostream>
-
-#include <wx/filesys.h>
+#include <fstream>
 
 WAVReader::WAVReader() {
-	sound = nullptr;
+
 }
 
 WAVReader::~WAVReader() {
-	delete sound;
-}
 
-WAV_FILE* WAVReader::GetLastSound() {
-	return sound;
 }
 
 WAV_FILE* WAVReader::ReadFileData(std::string url) {
 	WAV_FILE* temp = new WAV_FILE();
 
-	FILE* file = fopen(url.c_str(), "r+");
+	std::ifstream ifs(url);
 
-	if (file != NULL) {
+	if (ifs.is_open()) {
 		// Read the header
-		temp->header = new WAV_HEADER();
+		temp->header = new WAV_HEADER;
 
         std::cout << "Reading header ... " << std::endl;
 
-		size_t bytesRead = fread(temp->header, 1, 44, file);
+		ifs.get((char*)(temp->header), 44);
 
         std::cout << "Reading data ... " << std::endl;
 
+        // Read the samples
+        long bytesRead = ifs.gcount();
 		if (bytesRead > 0){
-			// Read the data
-			temp->data = new std::vector<short>(temp->header->DATA_chunk_size/2);
+            // PCM
+            if(temp->header->FMT_audio_format == 1){
+                temp->data = new std::vector<short>(temp->header->DATA_chunk_size/2);
 
-			bytesRead = fread(temp->data->data(), 2, temp->header->DATA_chunk_size, file);
+                ifs.get((char*)(temp->data->data()), temp->header->DATA_chunk_size);
 
-
+                std::cout << "Loaded " << temp->data->size()*2 << " bytes of data! " << std::endl;
+            }else{
+                std::cout << "Audio format is " << temp->header->FMT_audio_format << "! \n";
+                std::cout << "Program stoped" << std::endl;
+            }
+        }else{
+            std::cout <<  "Bytes read [ " << bytesRead << "] <= 0 !" << std::endl;
         }
-
-		sound = temp;
 	}else {
 		std::cout << "Problem opening the file...\n";
 	}
 
-    fclose(file);
+    ifs.close();
 
 	return temp;
 }

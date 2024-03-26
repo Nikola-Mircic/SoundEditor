@@ -29,6 +29,7 @@ Window::Window()
 Window::~Window(){
     delete reader;
     delete player;
+    delete sound;
 
     animator->ActivateRenderLoop(false);
     delete animator;
