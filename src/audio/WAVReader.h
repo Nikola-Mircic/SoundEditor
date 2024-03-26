@@ -9,11 +9,11 @@
 
 struct WAV_HEADER {
 	//RIFF
-	int RIFF_chunk_ID;
+	char RIFF_chunk_ID[4];
 	int RIFF_chunk_size;
-	int RIFF_format;
+	char RIFF_format[4];
 	//FMT
-	int FMT_chunk_ID;
+	char FMT_chunk_ID[4];
 	int FMT_chunk_size;
 	short FMT_audio_format;
 	short FMT_num_channels;
@@ -22,7 +22,7 @@ struct WAV_HEADER {
 	short FMT_block_align;
 	short FMT_bits_per_sample;
 	//DATA
-	int DATA_chunk_ID;
+    char DATA_chunk_ID[4];
 	int DATA_chunk_size;
 };
 
@@ -35,9 +35,6 @@ class WAVReader {
 public:
 	WAVReader();
 	~WAVReader();
-public:
+
 	WAV_FILE* ReadFileData(std::string url);
-	WAV_FILE* GetLastSound();
-private:
-	WAV_FILE* sound;
 };
