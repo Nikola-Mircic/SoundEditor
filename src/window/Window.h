@@ -13,13 +13,8 @@
 #include <chrono>
 
 #include "../audio/Player.h"
-#include "Animator.h"
-
-#define PLAY_BUTTON 0xb1
-#define RESTART_BUTTON 0xb2
-#define CONTINUE_BUTTON 0xb3
-#define STOP_BUTTON 0xb4
-#define LOAD_FILE_BUTTON 0xb5
+#include "./panels/Animator.h"
+#include "./panels/DataPanel.h"
 
 #define PARENT NULL
 #define ID wxID_ANY
@@ -45,8 +40,11 @@ private:
 
     Player* player;
     Animator* animator;
+    DataPanel* dataPanel;
 
-    void DrawSoundData(WAV_FILE* sound);
+    wxSizer* mainSizer;
+
+    void DrawLayout(WAV_FILE* sound);
 
     DECLARE_EVENT_TABLE();
 };

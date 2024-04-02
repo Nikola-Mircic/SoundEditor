@@ -3,9 +3,17 @@
 #include <cstdint>
 #include <cstdlib>
 
+#include <iostream>
+#include <fstream>
+
 #include <string>
 #include <vector>
+
 #include <fstream>
+#include <sstream>
+
+#include <algorithm>
+#include <iterator>
 
 struct WAV_HEADER {
 	//RIFF
@@ -21,13 +29,14 @@ struct WAV_HEADER {
 	int FMT_byte_rate;
 	short FMT_block_align;
 	short FMT_bits_per_sample;
-	//DATA
-    char DATA_chunk_ID[4];
-	int DATA_chunk_size;
 };
 
 struct WAV_FILE {
 	WAV_HEADER* header;
+
+    //Data
+    char DATA_chunk_ID[4];
+    int DATA_chunk_size;
 	std::vector<short>* data;
 };
 
@@ -37,4 +46,5 @@ public:
 	~WAVReader();
 
 	WAV_FILE* ReadFileData(std::string url);
+private:
 };

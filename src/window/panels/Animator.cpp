@@ -85,7 +85,7 @@ void Animator::Draw(wxDC& dc){
         dc.DrawRectangle(50, 0, 200, 50);
 
         tslist.forEach([&dc](sample s, int idx){
-            int height = std::min(50, (int)(600*val(s)/__SHRT_MAX__));
+            int height = std::min(50, (int)(200*val(s)/__SHRT_MAX__));
 
             int green = 150+freq(s)*25;
             int blue = std::min(255, std::max(green-255, 0));
